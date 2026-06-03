@@ -12,6 +12,97 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Kita satukan pengaturan versi di sini agar rapi -->
+        <selenium.version>4.28.0</selenium.version>
+        <junit.jupiter.version>5.11.4</junit.jupiter.version>
+        <cucumber.bom.version>7.21.0</cucumber.bom.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Cucumber BOM untuk mengunci keseragaman versi keluarga Cucumber -->
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-bom</artifactId>
+                <version>${cucumber.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- 1. SELENIUM CORE (Versi ditingkatkan untuk mendukung Chrome terbaru) -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.44.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- 2. JUNIT 5 JUPITER -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 3. JUNIT 5 PLATFORM SUITE (Wajib untuk Runner Cucumber di JUnit 5) -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>1.11.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 4. CUCUMBER LIBRARIES (Otomatis mengikuti versi BOM di atas) -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 5. MOCKITO (Opsional, bawaan proyek kamu) -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.20.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Surefire Plugin: Kunci utama agar JUnit 5 mau menjalankan Cucumber via Terminal/CI-CD -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+            <!-- Compiler Plugin memastikan Java menggunakan SDK versi 25 milikmu -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
