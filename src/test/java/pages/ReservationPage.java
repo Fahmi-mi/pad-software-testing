@@ -65,8 +65,11 @@ public class ReservationPage {
     }
 
     private void clickDialogFooterButton(String buttonText) {
-        WebElement button = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='" + buttonText + "']")));
-        button.click();
+        By dialogButton = By.xpath(
+                "//div[@role='dialog' or @data-state='open']//button[normalize-space()='" + buttonText + "']"
+        );
+        WebElement button = wait.until(ExpectedConditions.elementToBeClickable(dialogButton));
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
     }
 
     private void confirmAlertAction(String titleText, String actionText) {

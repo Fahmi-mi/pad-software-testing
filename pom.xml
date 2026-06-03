@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.44.0</version>
+            <version>4.27.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -90,7 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.2.5</version>
             </plugin>
             <!-- Compiler Plugin memastikan Java menggunakan SDK versi 25 milikmu -->
             <plugin>
