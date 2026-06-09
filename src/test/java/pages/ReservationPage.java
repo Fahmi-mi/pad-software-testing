@@ -1,9 +1,11 @@
 package pages;
 
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -18,7 +20,7 @@ public class ReservationPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    public void open(String baseUrl) {
+    public void fillCompleteReservationForm() {\r\n        fillPatientName(\"Budi Santoso\");\r\n        fillNickname(\"Budi\");\r\n        selectGender(\"Laki-laki\");\r\n        fillPhone(\"081234567890\");\r\n        fillAge(\"25\");\r\n        fillOccupation(\"Software Engineer\");\r\n        fillParentName(\"Siti Nurhaliza\");\r\n        fillCity(\"Jakarta\");\r\n        fillDistrict(\"Senayan\");\r\n        fillVillage(\"Kuningan\");\r\n        fillAddress(\"Jl. Sudirman No. 100, Blok A\");\r\n        fillHeight(\"170\");\r\n        fillWeight(\"70\");\r\n        fillComplaint(\"Gigi belakang kanan sakit saat mengunyah\");\r\n        toggleMedicalCheckbox(\"Apakah ada alergi obat atau makanan?\");\r\n        fillMedicalDetail(\"Apakah ada alergi obat atau makanan?\", \"Alergi Penisilin\");\r\n        toggleDentalCheckbox(\"Apakah Anda sering mengalami sakit gigi?\");\r\n        fillDentalDetail(\"Apakah Anda sering mengalami sakit gigi?\", \"Sakit saat minum dingin\");\r\n        selectDoctor(\"Dr. Adi Suryanto\");\r\n        selectServices(\"Konsultasi, Scaling\");\r\n        fillDoctorNotes(\"Lakukan scaling dan fluoride\");\r\n    }\r\n\r\n    public void open(String baseUrl) {
         driver.get(baseUrl + "/admin/reservasi");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[normalize-space()='Antrian Pasien']")));
     }
@@ -81,5 +83,241 @@ public class ReservationPage {
         button.click();
 
         wait.until(ExpectedConditions.invisibilityOfElementLocated(dialogTitle));
+    }
+
+    public void fillPatientName(String name) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Nama Pasien")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(name);
+    }
+
+    public void fillNickname(String nickname) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Nama Panggilan")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(nickname);
+    }
+
+    public void selectGender(String gender) {
+        WebElement dropdownButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//label[contains(text(), 'Jenis Kelamin')]/following::button[1]")
+        ));
+        scrollElementIntoView(dropdownButton);
+        dropdownButton.click();
+
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@role='menuitem'][contains(text(), '" + gender + "')]")
+        ));
+        option.click();
+    }
+
+    public void fillPhone(String phone) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Nomor Handphone")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(phone);
+    }
+
+    public void fillAge(String age) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Umur")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(age);
+    }
+
+    public void fillOccupation(String occupation) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Pekerjaan")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(occupation);
+    }
+
+    public void fillBirthDate(String dateString) {
+        WebElement datePickerBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//label[contains(text(), 'Tanggal Lahir')]/following::input[1]")
+        ));
+        scrollElementIntoView(datePickerBtn);
+        datePickerBtn.click();
+        datePickerBtn.sendKeys(dateString);
+    }
+
+    public void fillParentName(String parentName) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Nama Orang Tua")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(parentName);
+    }
+
+    public void fillCity(String city) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Kota/Kabupaten")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(city);
+    }
+
+    public void fillDistrict(String district) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Kecamatan")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(district);
+    }
+
+    public void fillVillage(String village) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Kelurahan")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(village);
+    }
+
+    public void fillAddress(String address) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Alamat")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(address);
+    }
+
+    public void fillHeight(String height) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Tinggi Badan")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(height);
+    }
+
+    public void fillWeight(String weight) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel("Berat Badan")));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(weight);
+    }
+
+    public void fillComplaint(String complaint) {
+        WebElement textarea = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Keluhan')]/following::textarea[1]")));
+        scrollElementIntoView(textarea);
+        textarea.clear();
+        textarea.sendKeys(complaint);
+    }
+
+    public void toggleMedicalCheckbox(String label) {
+        WebElement checkbox = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//label[contains(text(), '" + label + "')]/ancestor::div[1]//input[@type='checkbox']")
+        ));
+        scrollElementIntoView(checkbox);
+        checkbox.click();
+    }
+
+    public void fillMedicalDetail(String question, String detail) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//label[contains(text(), '" + question + "')]/following::input[@placeholder][1]")
+        ));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(detail);
+    }
+
+    public void toggleDentalCheckbox(String label) {
+        WebElement checkbox = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//label[contains(text(), '" + label + "')]/ancestor::div[1]//input[@type='checkbox']")
+        ));
+        scrollElementIntoView(checkbox);
+        checkbox.click();
+    }
+
+    public void fillDentalDetail(String question, String detail) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//label[contains(text(), '" + question + "')]/following::input[@placeholder][1]")
+        ));
+        scrollElementIntoView(input);
+        input.clear();
+        input.sendKeys(detail);
+    }
+
+    public void selectBrushingFrequency(String frequency) {
+        WebElement select = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Frekuensi')]/following::select[1]")));
+        scrollElementIntoView(select);
+        new Select(select).selectByVisibleText(frequency);
+    }
+
+    public void selectCheckupFrequency(String frequency) {
+        WebElement select = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Frekuensi Kontrol')]/following::select[1]")));
+        scrollElementIntoView(select);
+        new Select(select).selectByVisibleText(frequency);
+    }
+
+    public void selectDoctor(String doctorName) {
+        WebElement dropdownButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//label[contains(text(), 'Pilihan Dokter')]/following::button[1]")
+        ));
+        scrollElementIntoView(dropdownButton);
+        dropdownButton.click();
+
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@role='menuitem'][contains(text(), '" + doctorName + "')]") 
+        ));
+        option.click();
+    }
+
+    public void selectServices(String serviceNames) {
+        String[] services = serviceNames.split(",");
+        for (String serviceName : services) {
+            String trimmedService = serviceName.trim();
+            WebElement checkbox = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//label[contains(text(), '" + trimmedService + "')]/preceding::input[@type='checkbox'][1]")
+            ));
+            scrollElementIntoView(checkbox);
+            checkbox.click();
+        }
+    }
+
+    public void deselectService(String serviceName) {
+        WebElement checkbox = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//label[contains(text(), '" + serviceName + "')]/preceding::input[@type='checkbox'][1]")
+        ));
+        scrollElementIntoView(checkbox);
+        }
+
+    public void fillDoctorNotes(String notes) {
+        WebElement textarea = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Catatan')]/following::textarea[1]")));
+        scrollElementIntoView(textarea);
+        textarea.clear();
+        textarea.sendKeys(notes);
+    }
+
+    public void clearDoctorNotes() {
+        WebElement textarea = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Catatan')]/following::textarea[1]")));
+        scrollElementIntoView(textarea);
+        textarea.clear();
+    }
+
+    private By getFormInputByLabel(String labelText) {
+        return By.xpath("//label[contains(text(), '" + labelText + "')]/following::input[1]");
+    }
+
+    private void scrollElementIntoView(WebElement element) {
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+                "var element = arguments[0]; var parent = element.closest('[role=\"dialog\"]') || element.closest('[data-state=\"open\"]'); if (parent) { parent.scrollTop = element.offsetTop - parent.offsetTop - 100; } else { element.scrollIntoView(true); }",
+                element
+        );
+    }
+
+    public String getInputValue(String labelText) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(getFormInputByLabel(labelText)));
+        scrollElementIntoView(input);
+        return input.getAttribute("value");
+    }
+
+    public boolean isCheckboxChecked(String label) {
+        WebElement checkbox = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//label[contains(text(), '" + label + "')]/ancestor::div[1]//input[@type='checkbox']")
+        ));
+        scrollElementIntoView(checkbox);
+        return checkbox.isSelected();
+    }
+
+    public void assertErrorMessage(String expectedError) {
+        WebElement errorElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//p[contains(@class, 'text-destructive') and contains(text(), '" + expectedError + "')]")
+        ));
+        Assertions.assertNotNull(errorElement, "Error message not found: " + expectedError);
     }
 }

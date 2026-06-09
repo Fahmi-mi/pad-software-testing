@@ -1,5 +1,6 @@
 package steps;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -25,6 +26,11 @@ public class ReservationSteps {
         reservationPage.openFirstCardAction("Menunggu", "Validasi");
     }
 
+    @When("admin opens first validated reservation detail")
+    public void adminOpensFirstValidatedReservationDetail() {
+        reservationPage.openFirstCardAction("Tervalidasi", "Konfirmasi");
+    }
+
     @Then("reservation detail dialog should be visible")
     public void reservationDetailDialogShouldBeVisible() {
         reservationPage.waitForDetailDialog();
@@ -35,9 +41,36 @@ public class ReservationSteps {
         reservationPage.validateReservation();
     }
 
+    @When("admin completes the reservation")
+    public void adminCompletesTheReservation() {
+        reservationPage.completeReservation();
+    }
+
+    @When("admin cancels the reservation")
+    public void adminCancelsTheReservation() {
+        reservationPage.cancelReservation();
+    }
+
     @Then("validated section should have at least {int} reservation")
     public void validatedSectionShouldHaveAtLeastReservation(int minCount) {
         int count = reservationPage.getSectionCardCount("Tervalidasi");
         Assertions.assertTrue(count >= minCount, "Validated section is empty.");
+    }
+
+    @Then("completed section should have at least {int} reservation")
+    public void completedSectionShouldHaveAtLeastReservation(int minCount) {
+        int count = reservationPage.getSectionCardCount("Selesai");
+        Assertions.assertTrue(count >= minCount, "Completed section is empty.");
+    }
+
+    @Then("cancelled section should have at least {int} reservation")
+    public void cancelledSectionShouldHaveAtLeastReservation(int minCount) {
+        int count = reservationPage.getSectionCardCount("Dibatalkan");
+        Assertions.assertTrue(count >= minCount, "Cancelled section is empty.");
+    }
+
+    @And("reservation detail should move to completed section")
+    public void reservationDetailShouldMoveToCompletedSection() {
+        completedSectionShouldHaveAtLeastReservation(1);
     }
 }
