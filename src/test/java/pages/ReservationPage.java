@@ -20,7 +20,31 @@ public class ReservationPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    public void fillCompleteReservationForm() {\r\n        fillPatientName(\"Budi Santoso\");\r\n        fillNickname(\"Budi\");\r\n        selectGender(\"Laki-laki\");\r\n        fillPhone(\"081234567890\");\r\n        fillAge(\"25\");\r\n        fillOccupation(\"Software Engineer\");\r\n        fillParentName(\"Siti Nurhaliza\");\r\n        fillCity(\"Jakarta\");\r\n        fillDistrict(\"Senayan\");\r\n        fillVillage(\"Kuningan\");\r\n        fillAddress(\"Jl. Sudirman No. 100, Blok A\");\r\n        fillHeight(\"170\");\r\n        fillWeight(\"70\");\r\n        fillComplaint(\"Gigi belakang kanan sakit saat mengunyah\");\r\n        toggleMedicalCheckbox(\"Apakah ada alergi obat atau makanan?\");\r\n        fillMedicalDetail(\"Apakah ada alergi obat atau makanan?\", \"Alergi Penisilin\");\r\n        toggleDentalCheckbox(\"Apakah Anda sering mengalami sakit gigi?\");\r\n        fillDentalDetail(\"Apakah Anda sering mengalami sakit gigi?\", \"Sakit saat minum dingin\");\r\n        selectDoctor(\"Dr. Adi Suryanto\");\r\n        selectServices(\"Konsultasi, Scaling\");\r\n        fillDoctorNotes(\"Lakukan scaling dan fluoride\");\r\n    }\r\n\r\n    public void open(String baseUrl) {
+    public void fillCompleteReservationForm() {
+        fillPatientName("Budi Santoso");
+        fillNickname("Budi");
+        selectGender("Laki-laki");
+        fillPhone("081234567890");
+        fillAge("25");
+        fillOccupation("Software Engineer");
+        fillParentName("Siti Nurhaliza");
+        fillCity("Jakarta");
+        fillDistrict("Senayan");
+        fillVillage("Kuningan");
+        fillAddress("Jl. Sudirman No. 100, Blok A");
+        fillHeight("170");
+        fillWeight("70");
+        fillComplaint("Gigi belakang kanan sakit saat mengunyah");
+        toggleMedicalCheckbox("Apakah ada alergi obat atau makanan?");
+        fillMedicalDetail("Apakah ada alergi obat atau makanan?", "Alergi Penisilin");
+        toggleDentalCheckbox("Apakah Anda sering mengalami sakit gigi?");
+        fillDentalDetail("Apakah Anda sering mengalami sakit gigi?", "Sakit saat minum dingin");
+        selectDoctor("Dr. Adi Suryanto");
+        selectServices("Konsultasi, Scaling");
+        fillDoctorNotes("Lakukan scaling dan fluoride");
+    }
+
+    public void open(String baseUrl) {
         driver.get(baseUrl + "/admin/reservasi");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[normalize-space()='Antrian Pasien']")));
     }
@@ -252,7 +276,7 @@ public class ReservationPage {
         dropdownButton.click();
 
         WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[@role='menuitem'][contains(text(), '" + doctorName + "')]") 
+                By.xpath("//div[@role='menuitem'][contains(text(), '" + doctorName + "')]")
         ));
         option.click();
     }
@@ -274,7 +298,8 @@ public class ReservationPage {
                 By.xpath("//label[contains(text(), '" + serviceName + "')]/preceding::input[@type='checkbox'][1]")
         ));
         scrollElementIntoView(checkbox);
-        }
+        checkbox.click();
+    }
 
     public void fillDoctorNotes(String notes) {
         WebElement textarea = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), 'Catatan')]/following::textarea[1]")));

@@ -12,7 +12,12 @@ public class FormFillingSteps {
         this.reservationPage = new ReservationPage(context.getDriver());
     }
 
-    @When(\"admin fills the reservation form completely with valid data\")\r\n    public void adminFillsTheReservationFormCompletelyWithValidData() {\r\n        reservationPage.fillCompleteReservationForm();\r\n    }\r\n\r\n    @When(\"admin fills patient name with {string}\")
+    @When("admin fills the reservation form completely with valid data")
+    public void adminFillsTheReservationFormCompletelyWithValidData() {
+        reservationPage.fillCompleteReservationForm();
+    }
+
+    @When("admin fills patient name with {string}")
     public void adminFillsPatientNameWith(String name) {
         reservationPage.fillPatientName(name);
     }
@@ -160,8 +165,8 @@ public class FormFillingSteps {
     @And("patient name field should have value {string}")
     public void patientNameFieldShouldHaveValue(String expectedValue) {
         String actualValue = reservationPage.getInputValue("Nama Pasien");
-        assert actualValue.equals(expectedValue) : 
-            "Expected: " + expectedValue + ", but got: " + actualValue;
+        assert actualValue.equals(expectedValue) :
+                "Expected: " + expectedValue + ", but got: " + actualValue;
     }
 
     @And("checkbox {string} should be checked")

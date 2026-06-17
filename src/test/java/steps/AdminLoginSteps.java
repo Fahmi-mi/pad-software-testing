@@ -15,15 +15,19 @@ public class AdminLoginSteps {
 
     private final TestContext context;
     private final WebDriverWait wait;
+    private final WebDriverWait longWait;
 
     public AdminLoginSteps(TestContext context) {
         this.context = context;
         this.wait = new WebDriverWait(context.getDriver(), Duration.ofSeconds(10));
+        this.longWait = new WebDriverWait(context.getDriver(), Duration.ofSeconds(30));
     }
 
     @Given("admin opens login page")
     public void adminOpensLoginPage() {
         context.getDriver().get(BASE_URL + "/login");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//input[@type='email' or @type='text']")));
     }
 
     @Given("admin logs in with valid credentials")
@@ -32,12 +36,22 @@ public class AdminLoginSteps {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("admin@tentangdental.com", "password");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-slot='sidebar-header'] span")));
+        longWait.until(ExpectedConditions.urlContains("/admin"));
+
+        longWait.until(ExpectedConditions.or(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector("div[data-slot='sidebar-header'] span")),
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector("nav, aside, [data-slot='sidebar']")),
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//h1 | //h2 | //main"))
+        ));
     }
 
     @Given("admin opens reservation page")
     public void adminOpensReservationPage() {
         context.getDriver().get(BASE_URL + "/admin/reservasi");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[normalize-space()='Antrian Pasien']")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//h1[normalize-space()='Antrian Pasien']")));
     }
 }

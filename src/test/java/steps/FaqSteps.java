@@ -17,7 +17,7 @@ public class FaqSteps {
 
     @Given("admin opens FAQ page")
     public void adminOpensFaqPage() {
-        faqPage.open("https://tentangdental.netlify.app/admin/faq");
+        faqPage.open("https://tentangdental.netlify.app");
     }
 
     @When("admin fills FAQ question with {string}")
@@ -40,7 +40,7 @@ public class FaqSteps {
         Assertions.assertTrue(faqPage.isFaqPresent(question), "FAQ with question '" + question + "' not found in list.");
     }
 
-    @Then("admin should see error message {string}")
+    @Then("admin should see FAQ error message {string}")
     public void adminShouldSeeErrorMessage(String errorMessage) {
         faqPage.assertErrorMessage(errorMessage);
     }
@@ -60,8 +60,16 @@ public class FaqSteps {
         faqPage.clickDeleteFaq(index);
     }
 
+    @When("admin deletes FAQ with question {string}")
+    public void adminDeletesFaqWithQuestion(String question) {
+        faqPage.deleteFaqByQuestion(question);
+    }
+
     @Then("FAQ with question {string} should not be visible in list")
     public void faqWithQuestionShouldNotBeVisibleInList(String question) {
-        Assertions.assertFalse(faqPage.isFaqPresent(question), "FAQ with question '" + question + "' is still visible.");
+        Assertions.assertTrue(
+                faqPage.isFaqAbsent(question),
+                "FAQ with question '" + question + "' is still visible."
+        );
     }
 }

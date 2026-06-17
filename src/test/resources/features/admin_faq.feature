@@ -18,7 +18,7 @@ Feature: Admin FAQ Management
     When admin fills FAQ question with ""
     And admin fills FAQ answer with "Jawaban ini tidak akan tersimpan."
     And admin clicks add FAQ button
-    Then admin should see error message "Pertanyaan wajib diisi."
+    Then admin should see FAQ error message "Pertanyaan wajib diisi."
 
   Scenario: Successfully update an existing FAQ
     When admin edits the FAQ at index 0
@@ -26,6 +26,9 @@ Feature: Admin FAQ Management
     Then FAQ with question "Apa itu Tentang Dental (Updated)?" should be visible in list
 
   Scenario: Successfully delete an FAQ
-    Given FAQ with question "Apa itu Tentang Dental?" should be visible in list
-    When admin deletes the FAQ at index 0
-    Then FAQ with question "Apa itu Tentang Dental?" should not be visible in list
+    When admin fills FAQ question with "FAQ Yang Akan Dihapus"
+    And admin fills FAQ answer with "Jawaban sementara untuk dihapus."
+    And admin clicks add FAQ button
+    Then FAQ with question "FAQ Yang Akan Dihapus" should be visible in list
+    When admin deletes FAQ with question "FAQ Yang Akan Dihapus"
+    Then FAQ with question "FAQ Yang Akan Dihapus" should not be visible in list
