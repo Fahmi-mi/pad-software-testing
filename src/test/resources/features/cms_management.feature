@@ -50,6 +50,47 @@ Fitur: Manajemen Konten CMS oleh Admin
     Dan admin mengklik tombol submit promo tanpa mengisi form
     Maka field promo yang wajib diisi harus menampilkan indikator error
 
+  Skenario: 1.6 Validasi form promo dengan kombinasi input salah
+    Ketika admin membuka halaman manajemen Promo
+    Dan admin mengunggah gambar promo "promo_scaling.png"
+    Dan admin mengisi judul promo dengan 151 karakter
+    Dan admin mengisi harga awal promo "-100" dan harga diskon "200000"
+    Dan admin mengisi deskripsi promo "Promo pembersihan karang gigi"
+    Dan admin menyimpan promo baru
+    Maka pesan error validation "Nama promo maksimal 150 karakter" harus ditampilkan
+    Ketika admin mengisi judul promo "Promo Scaling Gigi Sensasional"
+    Dan admin menyimpan promo baru
+    Maka pesan error validation "Harga normal tidak valid" harus ditampilkan
+
+  Skenario: 1.7 Validasi form promo dengan harga promo lebih besar atau sama dengan harga normal
+    Ketika admin membuka halaman manajemen Promo
+    Dan admin mengunggah gambar promo "promo_scaling.png"
+    Dan admin mengisi judul promo "Promo Gigi Murah"
+    Dan admin mengisi harga awal promo "100000" dan harga diskon "100000"
+    Dan admin mengisi deskripsi promo "Promo pembersihan karang gigi"
+    Dan admin menyimpan promo baru
+    Maka pesan error validation "Harga promo harus lebih kecil dari harga normal" harus ditampilkan
+
+  Skenario: 1.8 Validasi form promo dengan ukuran gambar lebih dari 2MB
+    Ketika admin membuka halaman manajemen Promo
+    Dan admin membuat file dummy "large_promo.jpg" dengan ukuran 2.5 MB
+    Dan admin mengunggah gambar promo "large_promo.jpg"
+    Dan admin mengisi judul promo "Promo Gigi Bersih"
+    Dan admin mengisi harga awal promo "150000" dan harga diskon "75000"
+    Dan admin mengisi deskripsi promo "Promo pembersihan karang gigi"
+    Dan admin menyimpan promo baru
+    Maka pesan error validation "File terlalu besar, upload file kurang dari 2MB" harus ditampilkan
+
+  Skenario: 1.9 Validasi form promo dengan format gambar tidak valid
+    Ketika admin membuka halaman manajemen Promo
+    Dan admin membuat file dummy "invalid_promo.txt" dengan ukuran 0.1 MB
+    Dan admin mengunggah gambar promo "invalid_promo.txt"
+    Dan admin mengisi judul promo "Promo Gigi Sehat"
+    Dan admin mengisi harga awal promo "150000" dan harga diskon "75000"
+    Dan admin mengisi deskripsi promo "Promo pembersihan karang gigi"
+    Dan admin menyimpan promo baru
+    Maka pesan error validation "File harus berupa gambar" harus ditampilkan
+
   # ============================================================
   # 2. LAYANAN
   # ============================================================
@@ -89,6 +130,18 @@ Fitur: Manajemen Konten CMS oleh Admin
     Ketika admin membuka halaman manajemen Layanan
     Dan admin mengklik tombol submit layanan tanpa mengisi form
     Maka field layanan yang wajib diisi harus menampilkan indikator error
+
+  Skenario: 2.6 Validasi form layanan dengan icon format bukan gambar dan support image lebih dari 2MB
+    Ketika admin membuka halaman manajemen Layanan
+    Dan admin mengisi nama layanan "Scaling Gigi Premium"
+    Dan admin mengisi deskripsi layanan "Pembersihan karang gigi"
+    Dan admin membuat file dummy "invalid_icon.pdf" dengan ukuran 0.1 MB
+    Dan admin membuat file dummy "large_support.jpg" dengan ukuran 2.5 MB
+    Dan admin mengunggah icon layanan "invalid_icon.pdf"
+    Dan admin mengunggah gambar pendukung layanan "large_support.jpg"
+    Dan admin menyimpan layanan baru
+    Maka pesan error validation "Gambar pendukung wajib diunggah." harus ditampilkan
+    Dan pesan error validation "File terlalu besar, upload file kurang dari 2MB" harus ditampilkan
 
   # ============================================================
   # 3. PROFIL DOKTER
@@ -133,6 +186,15 @@ Fitur: Manajemen Konten CMS oleh Admin
     Dan admin mengklik tombol submit dokter tanpa mengisi form
     Maka field dokter yang wajib diisi harus menampilkan indikator error
 
+  Skenario: 3.6 Validasi form profil dokter dengan ukuran foto lebih dari 2MB
+    Ketika admin membuka halaman manajemen Profil Dokter
+    Dan admin mengisi nama dokter "drg. Caroline"
+    Dan admin mengisi spesialis dokter "Spesialis Konservasi Gigi"
+    Dan admin membuat file dummy "large_photo.png" dengan ukuran 2.5 MB
+    Dan admin mengunggah foto dokter "large_photo.png"
+    Dan admin menyimpan profil dokter baru
+    Maka pesan error validation "File terlalu besar, upload file kurang dari 2MB" harus ditampilkan
+
   # ============================================================
   # 4. GALERI
   # ============================================================
@@ -158,6 +220,13 @@ Fitur: Manajemen Konten CMS oleh Admin
     Ketika admin membuka halaman manajemen Galeri
     Dan admin mengklik tombol Tambahkan Gambar tanpa memilih file
     Maka indikator error harus ditampilkan untuk input file galeri
+
+  Skenario: 4.5 Validasi form galeri dengan format gambar tidak valid
+    Ketika admin membuka halaman manajemen Galeri
+    Dan admin membuat file dummy "invalid_gallery.pdf" dengan ukuran 0.1 MB
+    Dan admin mengunggah foto galeri "invalid_gallery.pdf"
+    Dan admin mengklik tombol Tambahkan Gambar
+    Maka pesan error validation "File harus berupa gambar" harus ditampilkan
 
   # ============================================================
   # 5. TESTIMONI
@@ -197,6 +266,13 @@ Fitur: Manajemen Konten CMS oleh Admin
     Dan admin mengklik tombol submit testimoni tanpa mengisi form
     Maka field testimoni yang wajib diisi harus menampilkan indikator error
 
+  Skenario: 5.6 Validasi form testimoni dengan isi testimoni kosong
+    Ketika admin membuka halaman manajemen Testimoni
+    Dan admin mengisi nama pasien "Budi"
+    Dan admin mengisi teks testimoni ""
+    Dan admin menyimpan testimoni baru
+    Maka pesan error validation "Isi testimoni wajib diisi" harus ditampilkan
+
   # ============================================================
   # 6. ARTIKEL
   # ============================================================
@@ -232,3 +308,16 @@ Fitur: Manajemen Konten CMS oleh Admin
     Ketika admin membuka halaman manajemen Artikel
     Dan admin mengklik tombol submit artikel tanpa mengisi form
     Maka field artikel yang wajib diisi harus menampilkan indikator error
+
+  Skenario: 6.6 Validasi form artikel dengan judul lebih dari 200 karakter dan konten kosong
+    Ketika admin membuka halaman manajemen Artikel
+    Dan admin mengunggah gambar artikel "artikel_gigi.png"
+    Dan admin mengisi judul artikel dengan 201 karakter
+    Dan admin mengisi konten artikel ""
+    Dan admin menyimpan artikel baru
+    Maka pesan error validation "Judul artikel maksimal 200 karakter" harus ditampilkan
+    Ketika admin mengisi judul artikel "Tips Menjaga Kesehatan Gigi Sehari-hari"
+    Dan admin menyimpan artikel baru
+    Maka pesan error validation "Konten artikel wajib diisi" harus ditampilkan
+
+

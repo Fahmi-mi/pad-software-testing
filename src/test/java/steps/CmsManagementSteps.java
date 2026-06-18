@@ -13,7 +13,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.*;
 import support.TestContext;
 
+import java.io.File;
 import java.time.Duration;
+import java.util.List;
 
 public class CmsManagementSteps {
     private final WebDriver driver;
@@ -887,5 +889,62 @@ public class CmsManagementSteps {
     public void fieldArtikelYangWajibDiisiHarusMenampilkanIndikatorError() {
         Assertions.assertTrue(artikelPage.isAnyFieldInvalid(),
                 "Tidak ada field artikel yang menampilkan validasi error.");
+    }
+
+    @And("admin mengisi judul promo dengan {int} karakter")
+    public void adminMengisiJudulPromoDenganKarakter(int length) {
+        String title = "A".repeat(length);
+        promoPage.fillTitle(title);
+    }
+
+    @And("admin membuat file dummy {string} dengan ukuran {double} MB")
+    public void adminMembuatFileDummyDenganUkuranMB(String fileName, double sizeInMB) {
+        File file = new File("src/test/resources/" + fileName);
+        try {
+            file.getParentFile().mkdirs();
+            if (file.exists()) {
+                file.delete();
+            }
+            java.io.RandomAccessFile raf = new java.io.RandomAccessFile(file, "rw");
+            raf.setLength((long) (sizeInMB * 1024 * 1024));
+            raf.close();
+            file.deleteOnExit();
+        } catch (Exception e) {
+            throw new RuntimeException("Gagal membuat file dummy: " + e.getMessage(), e);
+        }
+    }
+
+    @Then("pesan error validation {string} harus ditampilkan")
+    public void pesanErrorValidationHarusDitampilkan(String expectedMessage) {
+        By errorLoc = By.cssSelector(".text-red-500, .text-destructive, [role='alert'], [data-testid*='error-message'], [data-testid$='-error']");
+        try {
+            wait.until(driver -> {
+                List<WebElement> errors = driver.findElements(errorLoc);
+                for (WebElement el : errors) {
+                    if (el.isDisplayed() && el.getText().toLowerCase().contains(expectedMessage.toLowerCase())) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        } catch (Exception e) {
+            List<WebElement> allTexts = driver.findElements(By.cssSelector("p, span, div, li, [role='alert']"));
+            StringBuilder sb = new StringBuilder();
+            for (WebElement el : allTexts) {
+                if (el.isDisplayed()) {
+                    String text = el.getText().trim();
+                    if (!text.isEmpty() && text.length() < 300) {
+                        sb.append(text).append("\n");
+                    }
+                }
+            }
+            Assertions.fail("Pesan error '" + expectedMessage + "' tidak ditemukan. Teks halaman:\n" + sb.toString());
+        }
+    }
+
+    @And("admin mengisi judul artikel dengan {int} karakter")
+    public void adminMengisiJudulArtikelDenganKarakter(int length) {
+        String title = "A".repeat(length);
+        artikelPage.fillTitle(title);
     }
 }

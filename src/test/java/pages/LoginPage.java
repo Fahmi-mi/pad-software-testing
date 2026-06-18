@@ -143,9 +143,16 @@ public class LoginPage {
      */
     public String getErrorMessage() {
         try {
-            WebElement errorEl = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessage));
-            return errorEl.getText();
+            wait.until(driver -> {
+                WebElement el = driver.findElement(errorMessage);
+                return el.isDisplayed() && !el.getText().trim().isEmpty();
+            });
+            return driver.findElement(errorMessage).getText();
         } catch (Exception e) {
+            try {
+                WebElement fallback = driver.findElement(By.cssSelector(".text-red-500, .text-destructive, [role='alert']"));
+                return fallback.getText();
+            } catch (Exception ignored) {}
             return "";
         }
     }
