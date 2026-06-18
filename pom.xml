@@ -13,7 +13,7 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Kita satukan pengaturan versi di sini agar rapi -->
-        <selenium.version>4.28.0</selenium.version>
+        <selenium.version>4.30.0</selenium.version>
         <junit.jupiter.version>5.11.4</junit.jupiter.version>
         <cucumber.bom.version>7.21.0</cucumber.bom.version>
     </properties>
@@ -32,12 +32,20 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- 1. SELENIUM CORE (Versi ditingkatkan untuk mendukung Chrome terbaru) -->
+        <!-- 1. SELENIUM CORE -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.44.0</version>
-            <scope>compile</scope>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- WebDriverManager: Otomatis mengelola ChromeDriver tanpa konfigurasi PATH -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- 2. JUNIT 5 JUPITER -->
@@ -72,6 +80,14 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-picocontainer</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 6. SLF4J Logback (memperbaiki SLF4J no providers warning) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.16</version>
             <scope>test</scope>
         </dependency>
 
