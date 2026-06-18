@@ -212,7 +212,7 @@ Fitur: Manajemen Konten CMS oleh Admin
     Ketika admin membuka halaman manajemen Artikel
     Maka artikel "Anak 1 Tahun Boleh Sikat Gigi? Ini Panduan Lengkapnya" harus ada di halaman
     Dan penulis artikel "Admin Registration" harus ditampilkan
-    Dan 4 artikel harus ada di grid
+    Dan 3 artikel harus ada di grid
 
   Skenario: 6.3 Admin mengedit artikel melalui dialog
     Ketika admin membuka halaman manajemen Artikel

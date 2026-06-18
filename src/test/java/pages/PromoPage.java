@@ -22,7 +22,7 @@ public class PromoPage {
     private final By titleInput = By.cssSelector("[data-testid='promo-judul-input']");
     private final By originalPriceInput = By.cssSelector("[data-testid='promo-original-price-input']");
     private final By discountPriceInput = By.cssSelector("[data-testid='promo-discount-price-input']");
-    private final By descriptionEditor = By.cssSelector("div[contenteditable='true']");
+    private final By descriptionEditor = By.cssSelector("[data-testid='promo-deskripsi-editor'] div[contenteditable='true']");
     private final By submitButton = By.cssSelector("[data-testid='promo-submit-button']");
 
     public PromoPage(WebDriver driver) {
@@ -34,22 +34,17 @@ public class PromoPage {
     public void open(String baseUrl) {
         driver.get(baseUrl + "/admin/promo");
 
-        // Tunggu URL benar-benar landing di halaman admin
         wait.until(d -> d.getCurrentUrl().contains("/admin/promo"));
 
-        // Tunggu document fully loaded sebelum cari elemen
         wait.until(webDriver -> js.executeScript(
             "return document.readyState").equals("complete"));
 
-        // Baru tunggu elemen form muncul
         wait.until(ExpectedConditions.visibilityOfElementLocated(titleInput));
     }
 
     public void uploadPromoImage(String fileName) {
-        // Selenium uploads local files using sendKeys on <input type="file">
         WebElement uploadElement = wait.until(ExpectedConditions.presenceOfElementLocated(uploadInput));
         
-        // Simulating file upload using a dummy file path or actual file path
         File file = new File("src/test/resources/" + fileName);
         if (!file.exists()) {
             try {
@@ -100,7 +95,7 @@ public class PromoPage {
     public boolean isPromoCardDisplayed(String promoTitle) {
         try {
             WebElement card = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("[data-testid^='promo-card-']")));
+                By.xpath("//*[starts-with(@data-testid, 'promo-card-') and contains(., '" + promoTitle + "')]")));
             return card.isDisplayed();
         } catch (Exception e) { return false; }
     }
@@ -130,15 +125,10 @@ public class PromoPage {
     }
 
     public void openEditDialog(String promoTitle) {
-        String testId = "promo-card-" + titleToTestId(promoTitle);
-        By cardLoc = By.cssSelector("[data-testid='" + testId + "']");
+        By cardLoc = By.xpath("//*[starts-with(@data-testid, 'promo-card-') and contains(., '" + promoTitle + "')]");
         WebElement card = wait.until(ExpectedConditions.visibilityOfElementLocated(cardLoc));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", card);
         try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
-    }
-
-    private String titleToTestId(String title) {
-        return title.toLowerCase().replaceAll("\\s+", "-").replaceAll("[^a-z0-9-]", "");
     }
 
     public String getDialogTitleInputValue() {
@@ -175,13 +165,13 @@ public class PromoPage {
     public String getDialogDescriptionText() {
         try {
             WebElement editor = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("[role='dialog'] div[contenteditable='true']")));
+                By.cssSelector("[role='dialog'] [data-testid='promo-deskripsi-editor'] div[contenteditable='true']")));
             return editor.getText();
         } catch (Exception e) { return ""; }
     }
 
     public void clickSaveChanges() {
-        By saveBtn = By.xpath("//button[normalize-space()='Simpan Perubahan']");
+        By saveBtn = By.cssSelector("[role='dialog'] [data-testid='promo-submit-button']");
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(saveBtn));
         btn.click();
         try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
@@ -189,10 +179,10 @@ public class PromoPage {
 
     public void clickHapusPromo() {
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("button.bg-red-400")));
+            By.cssSelector("[data-testid='promo-hapus-button']")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
         try {
-            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action'], button.bg-destructive");
+            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action']");
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(confirmBtnLoc));
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", confirmBtn);
         } catch (Exception ignored) {}

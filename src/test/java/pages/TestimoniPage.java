@@ -24,17 +24,17 @@ public class TestimoniPage {
     private final By photoUpload   = By.cssSelector(
         "[data-testid='testimoni-foto-upload'], input[type='file']");
     private final By tiptapEditor  = By.cssSelector(
-        "[data-testid='testimoni-form'] .tiptap.ProseMirror, .tiptap.ProseMirror");
+        "[data-testid='testimoni-konten-editor'] div[contenteditable='true']");
     private final By submitButton  = By.cssSelector(
-        "[data-testid='testimoni-submit-button'], button[type='submit']");
+        "[data-testid='testimoni-submit-button']");
 
     // ── Delete / Dialog Locators ───────────────────────────────
-    private final By hapusBtn      = By.cssSelector("button.bg-red-400");
+    private final By hapusBtn      = By.cssSelector("[data-testid='testimoni-hapus-button']");
     private final By dialogContent = By.cssSelector("[data-slot='dialog-content']");
     private final By dialogClose   = By.cssSelector("button[data-slot='dialog-close']");
 
     // ── List Locators ──────────────────────────────────────────
-    private final By galeriGrid    = By.cssSelector(".line-clamp-2");
+    private final By galeriGrid    = By.cssSelector("[data-testid^='testimoni-text-']");
     private int initialCardCount   = -1;
 
     public TestimoniPage(WebDriver driver) {
@@ -92,7 +92,7 @@ public class TestimoniPage {
 
     // ── 5.2 Verify Existing Testimonials ──────────────────────
     public boolean isTestimoniPresentInList(String patientName) {
-        By loc = By.cssSelector("img[alt='" + patientName + "']");
+        By loc = By.xpath("//*[starts-with(@data-testid, 'testimoni-card-') and contains(., '" + patientName + "')]");
         try {
             return wait.until(ExpectedConditions.visibilityOfElementLocated(loc)).isDisplayed();
         } catch (Exception e) { return false; }
@@ -103,8 +103,8 @@ public class TestimoniPage {
             return true;
         }
         try {
-            By anyImg = By.cssSelector("img[src*='testimonials'], img[alt]");
-            return wait.until(ExpectedConditions.visibilityOfElementLocated(anyImg)).isDisplayed();
+            By anyCard = By.cssSelector("[data-testid^='testimoni-card-']");
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(anyCard)).isDisplayed();
         } catch (Exception e) {
             return false;
         }
@@ -125,7 +125,7 @@ public class TestimoniPage {
     }
 
     public int countTestimoniCards() {
-        List<WebElement> cards = driver.findElements(By.cssSelector(".cursor-pointer"));
+        List<WebElement> cards = driver.findElements(By.cssSelector("[data-testid^='testimoni-card-']"));
         return cards.size();
     }
 
@@ -139,17 +139,13 @@ public class TestimoniPage {
     // ── 5.3 Edit Testimoni Dialog ──────────────────────────────
     public void openEditDialog(String patientName) {
         initialCardCount = countTestimoniCards();
-        By cardLoc = By.xpath(
-            "//div[contains(@class,'cursor-pointer') and contains(@class,'border') and .//img[@alt='" + patientName + "']]"
-            + " | //div[contains(@class,'cursor-pointer') and contains(@class,'border') and contains(normalize-space(),'" + patientName + "')]");
+        By cardLoc = By.xpath("//*[starts-with(@data-testid, 'testimoni-card-') and contains(., '" + patientName + "')]");
         WebElement card;
         try {
             card = wait.until(ExpectedConditions.elementToBeClickable(cardLoc));
         } catch (Exception e) {
             System.out.println("Warning: testimony for " + patientName + " not found. Falling back to first available testimony.");
-            By firstCardLoc = By.xpath(
-                "//div[contains(@class,'cursor-pointer') and contains(@class,'border') and .//img]"
-                + " | //div[contains(@class,'cursor-pointer') and contains(@class,'border') and .//p]");
+            By firstCardLoc = By.cssSelector("[data-testid^='testimoni-card-']");
             card = wait.until(ExpectedConditions.elementToBeClickable(firstCardLoc));
         }
 
@@ -199,14 +195,14 @@ public class TestimoniPage {
     public String getDialogEditorText() {
         try {
             WebElement editor = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("[role='dialog'] .tiptap.ProseMirror")));
+                By.cssSelector("[role='dialog'] [data-testid='testimoni-konten-editor'] div[contenteditable='true']")));
             return editor.getText();
         } catch (Exception e) { return ""; }
     }
 
     public void typeDialogEditorText(String text) {
         WebElement editor = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("[role='dialog'] .tiptap.ProseMirror")));
+            By.cssSelector("[role='dialog'] [data-testid='testimoni-konten-editor'] div[contenteditable='true']")));
         editor.click();
         ((JavascriptExecutor) driver).executeScript(
             "arguments[0].innerText = arguments[1];", editor, text);
@@ -219,9 +215,7 @@ public class TestimoniPage {
     }
 
     public void clickSavePerubahan() {
-        By saveBtn = By.xpath(
-            "//button[@data-testid='testimoni-submit-button' and normalize-space()='Simpan Perubahan']"
-            + " | //button[normalize-space()='Simpan Perubahan']");
+        By saveBtn = By.cssSelector("[role='dialog'] [data-testid='testimoni-submit-button']");
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(saveBtn));
         btn.click();
     }
@@ -235,7 +229,7 @@ public class TestimoniPage {
 
         // Safe confirmation alert dialog confirm button click
         try {
-            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action'], button.bg-destructive, [data-testid*='konfirmasi']");
+            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action']");
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(confirmBtnLoc));
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", confirmBtn);
         } catch (Exception ignored) {}
@@ -264,9 +258,7 @@ public class TestimoniPage {
     }
 
     public void closeDialogWithBatalButton() {
-        By batalBtn = By.xpath(
-            "//button[@data-slot='dialog-close' and normalize-space()='Batal']"
-            + " | //button[normalize-space()='Batal']");
+        By batalBtn = By.cssSelector("[data-testid='testimoni-edit-batal']");
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(batalBtn));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
     }

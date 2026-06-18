@@ -18,18 +18,16 @@ public class GaleriPage {
     private final Actions actions;
 
     // ── Upload Form Locators ───────────────────────────────────
-    private final By fileInput    = By.cssSelector(
-        "input[type='file'][accept='image/png,image/jpeg,image/jpg,image/webp']");
+    private final By fileInput    = By.cssSelector("[data-testid='galeri-file-upload']");
     private final By submitButton = By.cssSelector("[data-testid='galeri-tambah-button']");
 
     // ── Grid Locators ──────────────────────────────────────────
-    private final By imageGrid    = By.cssSelector(".grid.sm\\:grid-cols-2.lg\\:grid-cols-4");
-    private final By galeriImages = By.cssSelector("img[alt^='Galeri']");
-    private final By firstCard    = By.cssSelector(".group.relative");
+    private final By imageGrid    = By.cssSelector("[data-testid='galeri-list']");
+    private final By galeriImages = By.cssSelector("[data-testid^='galeri-image-']");
+    private final By firstCard    = By.cssSelector("[data-testid^='galeri-item-']");
 
     // ── Delete Locators ────────────────────────────────────────
-    // VERIFIED: button pakai class opacity-80 hover:opacity-100 (bukan group-hover)
-    private final By deleteButton = By.cssSelector("button.opacity-80, button[class*='opacity-80'], button .lucide-trash");
+    private final By deleteButton = By.cssSelector("[data-testid^='galeri-hapus-button-']");
 
     public GaleriPage(WebDriver driver) {
         this.driver  = driver;
@@ -68,6 +66,10 @@ public class GaleriPage {
     public boolean isNewImageInGrid() {
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(imageGrid));
+            wait.until(driver -> {
+                List<WebElement> imgs = driver.findElements(galeriImages);
+                return !imgs.isEmpty();
+            });
             return true;
         } catch (Exception e) { return false; }
     }
@@ -87,7 +89,7 @@ public class GaleriPage {
     }
 
     public boolean isGaleriPresentInList(String altOrDescription) {
-        By loc = By.cssSelector("img[alt='" + altOrDescription + "'], img[alt^='Galeri']");
+        By loc = By.cssSelector("[data-testid^='galeri-image-']");
         try {
             return wait.until(ExpectedConditions.visibilityOfElementLocated(loc)).isDisplayed();
         } catch (Exception e) { return false; }
@@ -97,7 +99,7 @@ public class GaleriPage {
         List<WebElement> cards = driver.findElements(firstCard);
         if (cards.isEmpty()) return false;
         for (WebElement card : cards) {
-            List<WebElement> btns = card.findElements(By.cssSelector("button[type='button']"));
+            List<WebElement> btns = card.findElements(By.cssSelector("[data-testid^='galeri-hapus-button-']"));
             if (btns.isEmpty()) return false;
         }
         return true;
@@ -128,10 +130,7 @@ public class GaleriPage {
             Thread.sleep(500);
         } catch (InterruptedException ignored) {}
 
-        // VERIFIED: button pakai opacity-80 hover:opacity-100, bukan group-hover
-        By trashBtn = By.cssSelector(
-            "button.opacity-80, button[class*='opacity-80'], button .lucide-trash, button [data-lucide='trash'], "
-            + "[data-testid='delete-button'], button.bg-red-400");
+        By trashBtn = By.cssSelector("[data-testid^='galeri-hapus-button-']");
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(trashBtn));
 
         // FIX ERROR 3: null check sebelum JS click
@@ -154,7 +153,7 @@ public class GaleriPage {
     public boolean isFileInputErrorDisplayed() {
         try {
             WebElement errorEl = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("[data-testid='galeri-error-message'], .text-red-500, [role='alert']")));
+                By.cssSelector("[data-testid='galeri-error-message']")));
             return errorEl.isDisplayed();
         } catch (Exception e) {
             try {

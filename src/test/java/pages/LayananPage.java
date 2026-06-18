@@ -18,7 +18,7 @@ public class LayananPage {
     // Locators — diverifikasi dari DOM aktual
     private final By nameInput        = By.cssSelector("[data-testid='layanan-nama-input']");
     private final By detailInput      = By.cssSelector("[data-testid='layanan-detail-input']");
-    private final By artikelEditor    = By.cssSelector(".tiptap.ProseMirror");
+    private final By artikelEditor    = By.cssSelector("[data-testid='layanan-artikel-editor'] div[contenteditable='true']");
     private final By supportImgUpload = By.cssSelector("[data-testid='layanan-support-image-upload']");
     private final By iconUpload       = By.cssSelector("[data-testid='layanan-icon-upload']");
     private final By submitButton     = By.cssSelector("[data-testid='layanan-submit-button']");
@@ -223,8 +223,7 @@ public class LayananPage {
     public boolean isLayananCardDisplayed(String serviceName) {
         try {
             WebElement card = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[contains(@data-testid,'layanan-card') or contains(@class,'layanan-card')]//*[contains(normalize-space(),'" + serviceName + "')]" +
-                    " | //*[contains(normalize-space(),'" + serviceName + "')]")));
+                By.xpath("//*[starts-with(@data-testid, 'layanan-card-') and contains(., '" + serviceName + "')]")));
             return card.isDisplayed();
         } catch (Exception e) { return false; }
     }
@@ -232,7 +231,7 @@ public class LayananPage {
     public boolean isDescriptionContains(String text) {
         try {
             WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[contains(normalize-space(),'" + text + "')]")));
+                By.xpath("//*[starts-with(@data-testid, 'layanan-deskripsi-') and contains(., '" + text + "')]")));
             return el.isDisplayed();
         } catch (Exception e) { return false; }
     }
@@ -243,7 +242,7 @@ public class LayananPage {
 
     // ── 2.3 Edit ───────────────────────────────────────────────
     public void openEditDialog(String serviceName) {
-        By cardLoc = By.xpath("//button[.//h2[contains(normalize-space(),'" + serviceName + "')]]");
+        By cardLoc = By.xpath("//*[starts-with(@data-testid, 'layanan-card-') and contains(., '" + serviceName + "')]");
         WebElement card = wait.until(ExpectedConditions.elementToBeClickable(cardLoc));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", card);
         try { Thread.sleep(500); } catch (InterruptedException ignored) {}
@@ -260,7 +259,7 @@ public class LayananPage {
     public String getEditorText() {
         try {
             WebElement editor = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("[role='dialog'] .tiptap.ProseMirror")));
+                By.cssSelector("[role='dialog'] [data-testid='layanan-artikel-editor'] div[contenteditable='true']")));
             return editor.getText();
         } catch (Exception e) { return ""; }
     }
@@ -273,7 +272,7 @@ public class LayananPage {
     }
 
     public void clickSaveChanges() {
-        By saveBtn = By.xpath("//button[normalize-space()='Simpan Perubahan']");
+        By saveBtn = By.cssSelector("[role='dialog'] [data-testid='layanan-submit-button']");
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(saveBtn));
         btn.click();
         try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
@@ -281,10 +280,10 @@ public class LayananPage {
 
     public void clickHapusLayanan() {
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("button.bg-red-400")));
+            By.cssSelector("[data-testid='layanan-hapus-button']")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
         try {
-            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action'], button.bg-destructive");
+            By confirmBtnLoc = By.cssSelector("[data-testid='layanan-hapus-konfirmasi'], [data-slot='alert-dialog-action']");
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(confirmBtnLoc));
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", confirmBtn);
         } catch (Exception ignored) {}

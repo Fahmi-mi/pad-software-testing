@@ -25,7 +25,7 @@ public class ProfilDokterPage {
     private final By spesialisInput   = By.cssSelector(
         "[data-testid='dokter-spesialis-input'], input[placeholder*='Spesialis'], input[name='specialization']");
     private final By tiptapEditor     = By.cssSelector(
-        "[data-testid='dokter-form'] .tiptap.ProseMirror, .tiptap.ProseMirror");
+        "[data-testid='dokter-pernyataan-editor'] div[contenteditable='true']");
     private final By schedulePicker   = By.cssSelector(
         ".border-primary.min-h-9.w-full, [data-testid='schedule-picker'], .schedule-picker");
     private final By photoUpload      = By.cssSelector(
@@ -37,7 +37,7 @@ public class ProfilDokterPage {
     private final By cardFirst        = By.cssSelector("[data-testid='dokter-card-0']");
 
     // ── Delete Locator ─────────────────────────────────────────
-    private final By hapusDokterBtn   = By.cssSelector("button.bg-red-400");
+    private final By hapusDokterBtn   = By.cssSelector("[data-testid='dokter-hapus-button']");
 
     public ProfilDokterPage(WebDriver driver) {
         this.driver  = driver;
@@ -213,7 +213,7 @@ public class ProfilDokterPage {
     }
 
     public boolean editorContains(String text) {
-        By loc = By.cssSelector("[data-slot='dialog-content'] .tiptap.ProseMirror");
+        By loc = By.cssSelector("[data-slot='dialog-content'] [data-testid='dokter-pernyataan-editor'] div[contenteditable='true']");
         WebElement editor = wait.until(ExpectedConditions.visibilityOfElementLocated(loc));
         return editor.getText().contains(text);
     }
@@ -234,7 +234,7 @@ public class ProfilDokterPage {
 
         // Safe confirmation alert dialog confirm button click
         try {
-            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action'], button.bg-destructive, [data-testid*='konfirmasi']");
+            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action']");
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(confirmBtnLoc));
             try { Thread.sleep(500); } catch (InterruptedException ignored) {}
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", confirmBtn);

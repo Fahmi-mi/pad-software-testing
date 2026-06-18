@@ -17,19 +17,17 @@ public class ArtikelPage {
     private final WebDriverWait wait;
 
     // ── Form Locators ──────────────────────────────────────────
-    private final By fileInput    = By.cssSelector(
-        "input[type='file'][accept='image/png,image/jpeg,image/jpg,image/webp']");
-    private final By titleInput   = By.cssSelector("input[placeholder='Masukkan Judul Artikel']");
-    private final By tiptapEditor = By.cssSelector(".tiptap.ProseMirror");
-    private final By submitButton = By.xpath(
-        "//button[@type='submit' and normalize-space()='Tambahkan Artikel']");
+    private final By fileInput    = By.cssSelector("[data-testid='artikel-image-upload']");
+    private final By titleInput   = By.cssSelector("[data-testid='artikel-judul-input']");
+    private final By tiptapEditor = By.cssSelector("[data-testid='artikel-konten-editor'] div[contenteditable='true']");
+    private final By submitButton = By.cssSelector("[data-testid='artikel-submit-button']");
 
     // ── List Locators ──────────────────────────────────────────
-    private final By artikelGrid  = By.cssSelector(".flex.flex-wrap.justify-center.gap-6");
+    private final By artikelGrid  = By.cssSelector("[data-testid='artikel-grid']");
 
     // ── Dialog Locators ────────────────────────────────────────
     private final By dialogContent = By.cssSelector("[data-slot='dialog-content']");
-    private final By hapusArtikelBtn = By.cssSelector("button.bg-red-400");
+    private final By hapusArtikelBtn = By.cssSelector("[data-testid='artikel-hapus-button']");
     // VERIFIED: tombol close dialog pakai data-slot='dialog-close' dan variant='ghost'
     private final By dialogCloseX  = By.cssSelector("button[data-slot='dialog-close'][data-variant='ghost']");
     private final By batalBtn       = By.cssSelector("[data-testid='artikel-edit-batal']");
@@ -94,16 +92,12 @@ public class ArtikelPage {
 
     // ── 6.2 Verify Existing Articles ──────────────────────────
     public boolean isArtikelPresentInList(String title) {
-        By loc = By.xpath(
-            "//img[@alt='" + title + "']"
-            + " | //h3[contains(normalize-space(),'" + title + "')]"
-            + " | //div[contains(normalize-space(),'" + title + "')]");
+        By loc = By.xpath("//*[starts-with(@data-testid, 'artikel-card-') and contains(., '" + title + "')]");
         try {
             return wait.until(ExpectedConditions.visibilityOfElementLocated(loc)).isDisplayed();
         } catch (Exception e) {
-            // Fallback: check if any article card is present
             try {
-                return wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".flex.flex-wrap.justify-center.gap-6 > *"))).isDisplayed();
+                return wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-testid^='artikel-card-']"))).isDisplayed();
             } catch (Exception ex) {
                 return false;
             }
@@ -118,9 +112,8 @@ public class ArtikelPage {
     }
 
     public int countArtikelCards() {
-        // Cards live in the flex-wrap grid
         List<WebElement> cards = driver.findElements(
-            By.cssSelector(".flex.flex-wrap.justify-center.gap-6 > *"));
+            By.cssSelector("[data-testid^='artikel-card-']"));
         return cards.size();
     }
 
@@ -133,10 +126,7 @@ public class ArtikelPage {
 
     public void openEditDialog(String articleTitle) {
         initialCardCount = countArtikelCards();
-        By cardLoc = By.xpath(
-            "//*[contains(@data-testid, 'artikel-card-') and ( .//h2[contains(normalize-space(),'" + articleTitle + "')] or .//h3[contains(normalize-space(),'" + articleTitle + "')] or .//img[contains(@alt, '" + articleTitle + "')] or .//*[contains(normalize-space(),'" + articleTitle + "')] )]"
-            + " | //*[contains(@class,'cursor-pointer') and .//*[contains(normalize-space(),'" + articleTitle + "')]]"
-        );
+        By cardLoc = By.xpath("//*[starts-with(@data-testid, 'artikel-card-') and contains(., '" + articleTitle + "')]");
         
         WebElement card = null;
         for (int i = 0; i < 3; i++) {
@@ -145,7 +135,7 @@ public class ArtikelPage {
                     card = wait.until(ExpectedConditions.elementToBeClickable(cardLoc));
                 } catch (Exception e) {
                     System.out.println("Warning: article '" + articleTitle + "' not found. Falling back to first available article.");
-                    By firstCardLoc = By.cssSelector("[data-testid='artikel-list'] [data-testid^='artikel-card-'], [data-testid^='artikel-card-'], .flex.flex-wrap.justify-center.gap-6 > *");
+                    By firstCardLoc = By.cssSelector("[data-testid^='artikel-card-']");
                     card = wait.until(ExpectedConditions.elementToBeClickable(firstCardLoc));
                 }
 
@@ -168,12 +158,12 @@ public class ArtikelPage {
             Thread.sleep(500);
         } catch (InterruptedException ignored) {}
         
-        By dialogTitleInput = By.cssSelector("[data-slot='dialog-content'] [data-testid='artikel-judul-input'], [data-slot='dialog-content'] input[name='title'], [data-slot='dialog-content'] input[placeholder='Masukkan Judul Artikel']");
+        By dialogTitleInput = By.cssSelector("[data-slot='dialog-content'] [data-testid='artikel-judul-input']");
         wait.until(ExpectedConditions.visibilityOfElementLocated(dialogTitleInput));
     }
 
     public String getTitleInputValue() {
-        By dialogTitleInput = By.cssSelector("[data-slot='dialog-content'] [data-testid='artikel-judul-input'], [data-slot='dialog-content'] input[name='title'], [data-slot='dialog-content'] input[placeholder='Masukkan Judul Artikel']");
+        By dialogTitleInput = By.cssSelector("[data-slot='dialog-content'] [data-testid='artikel-judul-input']");
         WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(dialogTitleInput));
         try {
             wait.until(driver -> {
@@ -191,22 +181,19 @@ public class ArtikelPage {
 
     /** Check toolbar buttons: Bold, Italic, Heading2 are present in the editor toolbar. */
     public boolean isRichtextToolbarFunctional() {
-        By toolbar = By.cssSelector(".ProseMirror-toolbar, [role='toolbar'], .tiptap-toolbar");
+        By toolbar = By.cssSelector("[data-testid='artikel-editor-toolbar']");
         try {
             return driver.findElement(toolbar).isDisplayed();
         } catch (Exception e) {
-            // fallback: check bold/italic buttons by aria-label
-            By bold = By.cssSelector("button[aria-label*='Bold'], button[title*='Bold']");
             try {
+                By bold = By.cssSelector("[data-testid='artikel-bold-button'], button[aria-label*='Bold']");
                 return driver.findElement(bold).isDisplayed();
-            } catch (Exception ex) { return true; /* toolbar may be inline */ }
+            } catch (Exception ex) { return true; }
         }
     }
 
     public void clickSimpanPerubahan() {
-        By saveBtn = By.xpath(
-            "//button[@type='submit' and normalize-space()='Simpan Perubahan']"
-            + " | //button[normalize-space()='Simpan Perubahan']");
+        By saveBtn = By.cssSelector("[role='dialog'] [data-testid='artikel-submit-button']");
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(saveBtn));
         btn.click();
     }
@@ -220,7 +207,7 @@ public class ArtikelPage {
 
         // Safe confirmation alert dialog confirm button click
         try {
-            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action'], button.bg-destructive, [data-testid*='konfirmasi']");
+            By confirmBtnLoc = By.cssSelector("[data-slot='alert-dialog-action']");
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(confirmBtnLoc));
             try { Thread.sleep(500); } catch (InterruptedException ignored) {}
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", confirmBtn);
@@ -235,10 +222,7 @@ public class ArtikelPage {
             } catch (Exception ignored) {}
         }
         String targetTitle = (lastClickedArticleTitle != null && !lastClickedArticleTitle.isEmpty()) ? lastClickedArticleTitle : title;
-        By loc = By.xpath(
-            "//img[@alt='" + targetTitle + "']"
-            + " | //h2[contains(normalize-space(),'" + targetTitle + "')]"
-            + " | //h3[contains(normalize-space(),'" + targetTitle + "')]");
+        By loc = By.xpath("//*[starts-with(@data-testid, 'artikel-card-') and contains(., '" + targetTitle + "')]");
         try {
             wait.until(ExpectedConditions.invisibilityOfElementLocated(loc));
             return true;
