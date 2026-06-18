@@ -1,7 +1,4 @@
-Feature: Admin Reservasi
-  As an admin
-  I want to manage reservation status
-  So that I can validate and confirm patient appointments
+Feature: Admin Reservasi Management
 
   Background:
     Given admin opens login page
@@ -16,5 +13,6 @@ Feature: Admin Reservasi
   Scenario: Validate first pending reservation
     Given pending section has at least 1 reservation
     When admin opens first pending reservation detail
-    And admin validates the reservation in dialog
+    Then reservation detail dialog should be visible
+    When admin validates the reservation in dialog
     Then validated section should have at least 1 reservation
