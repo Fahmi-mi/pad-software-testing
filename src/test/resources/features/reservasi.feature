@@ -174,10 +174,11 @@ Feature: Form Reservasi Tentang Dental
     Then Layanan "<layanan>" berhasil dipilih
 
     Examples:
-      | layanan |
-      | Scaling |
-      | Tambal Gigi |
-      | Cabut Gigi |
+      | layanan                     |
+      | Scaling                      |
+      | Tambal Gigi                  |
+      | Oral Profilaksis             |
+      | Perawatan Saluran Akar (PSA) |
 
   @TC-16 @validasi
   Scenario: Submit tanpa memilih layanan ditolak sistem
