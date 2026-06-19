@@ -49,7 +49,7 @@ Valid:
 
 * Budi Santoso
 * Siti
-* Dr. Ahmad Rizal Sp.KG
+* Drg. Sania Dara Afiati, Sp.KG
 
 Invalid:
 
