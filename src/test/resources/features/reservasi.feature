@@ -58,7 +58,7 @@ Feature: Form Reservasi Tentang Dental
       | nama                   | keterangan                     |
       | Budi Santoso           | Nama normal dengan spasi       |
       | Siti                   | Nama pendek 4 karakter         |
-      | Dr. Ahmad Rizal Sp.KG  | Nama dengan gelar dan titik    |
+      | Drg. Sania Dara Afiati, Sp.KG | Nama dengan gelar dan titik    |
 
   @TC-07 @validasi @EP @nama-invalid
   Scenario Outline: EP - Nama dari kelas INVALID ditolak sistem
